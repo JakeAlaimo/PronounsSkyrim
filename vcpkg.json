@@ -1,0 +1,12 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+    "name": "pronouns-ng",
+    "version-string": "2.1.1",
+    "port-version": 0,
+    "description": "SKSE plugin adding configurable gender pronouns to Skyrim, for unified AE/SE/VR deployment.",
+    "homepage": "https://www.nexusmods.com/skyrimspecialedition/mods/43816",
+    "license": "MIT",
+    "dependencies": [
+        "commonlibsse-ng"
+    ]
+}
