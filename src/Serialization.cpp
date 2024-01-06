@@ -4,7 +4,15 @@
 
 namespace Serialization 
 {
-    constexpr float SerializationDataVersion = 1.1;
+    enum SerializationVersion : uint32_t
+    {
+        PreCommonLib = 1,
+        ActivePreferredAndOverride = 2, // Post-commonlib, the basic 3 pieces of data this mod started with
+
+        // Alias to end of the enum
+        LastPlusOne,
+        Last = LastPlusOne - 1
+    };
 
     void Revert(SKSE::SerializationInterface* Interface)  // between save loads, revert to default value
     {
@@ -13,7 +21,7 @@ namespace Serialization
 
     void Save(SKSE::SerializationInterface* Interface)
     {
-        if (Interface && Interface->OpenRecord('DATA', SerializationDataVersion))
+        if (Interface && Interface->OpenRecord('DATA', SerializationVersion::Last))
         {
             Interface->WriteRecordData(&PronounOverrides::PlayerPronouns.ActivePronouns, sizeof(DWORD));
             Interface->WriteRecordData(&PronounOverrides::PlayerPronouns.PreferredPronouns, sizeof(DWORD));
@@ -29,12 +37,12 @@ namespace Serialization
 
         while (Interface && Interface->GetNextRecordInfo(Type, Version, Length)) 
         {
-            if (Type != 'DATA')
+            if (Type != 'DATA' || !Length)
             {
                 continue;
             }
 
-            if (Version == SerializationDataVersion && Length)
+            if (Version <= SerializationVersion::ActivePreferredAndOverride)
             {
                 Interface->ReadRecordData(&PronounOverrides::PlayerPronouns.ActivePronouns, sizeof(DWORD));
                 Interface->ReadRecordData(&PronounOverrides::PlayerPronouns.PreferredPronouns, sizeof(DWORD));
